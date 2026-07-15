@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+credentials.json
+price_reader.json
+msedgedriver.exe
+Driver_Notes/
+pricebot_errors.txt
