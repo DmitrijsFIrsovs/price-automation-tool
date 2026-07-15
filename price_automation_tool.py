@@ -125,9 +125,9 @@ def main_workflow(category, ranges_str, output_widget, update_options):
 
     try:
 
-        log(f"Выбрана категория: {category}")
+        log(f"Selected category: {category}")
 
-        log(f"Диапазон строк: {ranges_str}")
+        log(f"Selected rows: {ranges_str}")
 
         scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/drive']
 
@@ -171,21 +171,21 @@ def main_workflow(category, ranges_str, output_widget, update_options):
 
                 codes_and_prices.append((code, price_rd, price_1a, price_varle, price_shop))
 
-        log("Буду обновлять:")
+        log("Products to update:")
 
         log(str(codes_and_prices))
 
         driver, wait = start_driver()
 
-        log("Обрабатываем:")
+        log("Processing products:")
 
         for code, price_rd, price_1a, price_varle, price_shop in codes_and_prices:
 
-            log(f"Обрабатываю: {code} -> RD: {price_rd}, 1A: {price_1a}, VARLE: {price_varle}, SHOP: {price_shop}")
+            log(f"Processing: {code} -> RD: {price_rd}, 1A: {price_1a}, VARLE: {price_varle}, SHOP: {price_shop}")
 
             try:
 
-                driver.get('https://mdata.lv/0_2pc_shop_adminpan/catalog_menu_editor.php?lang=ru')
+                
 
                 wait.until(EC.presence_of_element_located((By.NAME, "search_query")))
 
@@ -234,7 +234,7 @@ def main_workflow(category, ranges_str, output_widget, update_options):
 
                 if not found:
 
-                    log(f"Код {code} не найден!")
+                    log(f"Product {code} was not found.")
 
                     continue
 
@@ -264,7 +264,7 @@ def main_workflow(category, ranges_str, output_widget, update_options):
 
                 try:
                     shop_input = driver.find_element(By.NAME, "product_end_price")
-                except:
+                except Exception:
                     shop_input = driver.find_element(By.ID, "red")
 
                 current_rd = price_input.get_attribute('value').replace(',', '.').strip()
@@ -300,7 +300,7 @@ def main_workflow(category, ranges_str, output_widget, update_options):
 
                 if not need_update:
 
-                    log(f"Товар {code}: Все цены уже актуальны, пропускаю.")
+                    log(f" {code}: Prices are already up to date. Skipping.")
 
                     continue
 
@@ -314,15 +314,15 @@ def main_workflow(category, ranges_str, output_widget, update_options):
 
             except Exception as e:
 
-                log(f"Ошибка для {code}: {e}")
+                log(f"Error while processing {code}: {e}")
 
-        log("Готово!")
+        log("Done!")
 
         driver.quit()
 
     except Exception as e:
 
-        log(f"Критическая ошибка: {e}")
+        log(f"Critical error: {e}")
 
 
 def start_callback():
@@ -349,9 +349,9 @@ def start_callback():
 
 root = tk.Tk()
 
-root.title('Ценобот')
+root.title('Price Automation Tool')
 
-tk.Label(root, text='Категория').grid(row=0, column=0)
+tk.Label(root, text='Category').grid(row=0, column=0)
 
 cat_var = tk.StringVar(value=list(CATEGORIES.keys())[0])
 
@@ -359,15 +359,15 @@ cat_combo = ttk.Combobox(root, textvariable=cat_var, values=list(CATEGORIES.keys
 
 cat_combo.grid(row=0, column=1)
 
-tk.Label(root, text='Диапазон строк').grid(row=1, column=0)
+tk.Label(root, text="Row Range").grid(row=1, column=0)
 
 range_entry = tk.Entry(root)
 
-range_entry.insert(0, "2-572")
+range_entry.insert(0, "2-10")
 
 range_entry.grid(row=1, column=1)
 
-tk.Label(root, text="Какие цены менять").grid(row=2, column=0)
+tk.Label(root, text="Update Prices").grid(row=2, column=0)
 
 rd_var = tk.BooleanVar(value=True)
 a1_var = tk.BooleanVar(value=True)
@@ -379,11 +379,11 @@ tk.Checkbutton(root, text="1A", variable=a1_var).grid(row=3, column=1)
 tk.Checkbutton(root, text="VARLE", variable=varle_var).grid(row=4, column=0)
 tk.Checkbutton(root, text="SHOP", variable=shop_var).grid(row=4, column=1)
 
-start_btn = tk.Button(root, text='Старт', command=start_callback)
+start_btn = tk.Button(root, text='Start', command=start_callback)
 
 start_btn.grid(row=5, column=0)
 
-exit_btn = tk.Button(root, text='Выход', command=root.destroy)
+exit_btn = tk.Button(root, text='Exit', command=root.destroy)
 
 exit_btn.grid(row=5, column=1)
 
