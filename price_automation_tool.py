@@ -70,7 +70,7 @@ def check_versions():
 
     except FileNotFoundError:
 
-        print("⚠ Не удалось найти msedge")
+        print("Microsoft Edge was not found.")
 
     try:
 
@@ -80,7 +80,7 @@ def check_versions():
 
     except FileNotFoundError:
 
-        print("⚠ Не найден msedgedriver")
+        print("Microsoft Edge WebDriver was not found.")
 
 
 check_versions()
